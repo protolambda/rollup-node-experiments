@@ -1,0 +1,10 @@
+# Don't use this in production. This is a mnemonic for allocating ETH in local short-lived testnets.
+mnemonic: "squirrel green gallery layer logic title habit chase clog actress language enrich body plate fun pledge gap abuse mansion define either blast alien witness"
+l1_chain_id: 900
+l2_chain_id: 901
+premine:
+  "m/44'/60'/0'/0/0": 10000000ETH
+  "m/44'/60'/0'/0/1": 10000000ETH
+  "m/44'/60'/0'/0/2": 10000000ETH
+deposit_contract_address: '0xdeaddeaddeaddeaddeaddeaddeaddeaddead0001'
+l1_info_predeploy_address: '0x4242424242424242424242424242424242424242'
