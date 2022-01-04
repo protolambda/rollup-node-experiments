@@ -112,4 +112,4 @@ with open("l1_genesis.json", "wt") as f:
     json.dump(l1_out, f, indent='  ')
 
 with open("l2_genesis.json", "wt") as f:
-    json.dump(l1_out, f, indent='  ')
+    json.dump(l2_out, f, indent='  ')

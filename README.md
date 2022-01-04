@@ -4,6 +4,10 @@ Test scripts etc. for experimental rollup testing.
 
 *untested, work in progress*
 
+## Config preparation
+
+Change `rollup.yaml` for custom premine / testnet ID / L1 clique signers.
+
 ```
 python -m venv venv
 source venv/bin/activate
@@ -12,14 +16,47 @@ source venv/bin/activate
 python gen_confs.py
 ```
 
+## Node setup
+
+### L1 setup
+
+With *upstream geth*:
+```
+geth init --datadir data_l1 l1_genesis.json
+
+geth --datadir data_l1 --networkid 900
+```
+
+### L2 exec-engine setup
+
+With https://github.com/ethereum-optimism/reference-optimistic-geth `optimism-prototype` branch:
+
+```
+geth init --datadir data_l2 l2_genesis.json
+
+geth --datadir data_l2 --networkid 901
+```
+
+### Rollup-node setup
+
 TODO:
-- configure PoA in L1 local testnet:
-  - configure PoA signers in chain config
-  - set genesis extra-data to PoA signer pub
+- optimism specs
+- run opnode/cmd
+- use genesis hash flags for L1 and L2 block hashes (need script to retrieve from initialized geth nodes)
+
+### General geth setup tips
+
+```
+# If public, add:
+--nat extip:YOUR_IP_HERE
+
+# If private (you only need a single node for testing local L2 deployment):
+--maxpeers=0
+```
 
 Then:
 - setup L1 node with L1 chain config (`geth init --todo`), with upstream geth
-- setup L2 engine with L2 chain config (`geth init --todo`), but with https://github.com/ethereum-optimism/reference-optimistic-geth `optimism-prototype` branch
+- setup L2 engine with L2 chain config (`geth init --todo`), but with 
 - setup L2 rollup node (https://github.com/ethereum-optimism/optimistic-specs/)
 
 ## License
