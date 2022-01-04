@@ -6,5 +6,6 @@ premine:
   "m/44'/60'/0'/0/0": 10000000ETH
   "m/44'/60'/0'/0/1": 10000000ETH
   "m/44'/60'/0'/0/2": 10000000ETH
+clique_signers: ["m/44'/60'/0'/0/0"]
 deposit_contract_address: '0xdeaddeaddeaddeaddeaddeaddeaddeaddead0001'
 l1_info_predeploy_address: '0x4242424242424242424242424242424242424242'

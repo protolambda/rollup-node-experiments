@@ -45,11 +45,20 @@ for key, value in data['premine'].items():
     premine_alloc[acct.address] = {"balance": weival}
 
 
+clique_extra_data = b'\x00' * 32
+for signer_path in data['clique_signers']:
+    clique_signer_acct = w3.eth.account.from_mnemonic(data['mnemonic'], account_path=signer_path, passphrase='')
+    clique_extra_data += bytes.fromhex(clique_signer_acct.address[2:])
+clique_extra_data += b'\x00' * 65
+
 l1_out = {
     "config": {
         "chainId": int(data['l1_chain_id']),
         **common_forks,
-        # TODO: PoA config
+        "clique": {
+            "period": 6,  # block time
+            "epoch": 30000
+        }
     },
     "alloc": {
         **precompile_alloc,
@@ -62,7 +71,7 @@ l1_out = {
     },
     "coinbase": "0x0000000000000000000000000000000000000000",
     "difficulty": "0x01",
-    "extraData": "",
+    "extraData": "0x" + clique_extra_data.hex(),
     "gasLimit": "0x400000",
     "nonce": "0x1234",
     "mixhash": "0x0000000000000000000000000000000000000000000000000000000000000000",
