@@ -51,6 +51,12 @@ for signer_path in data['clique_signers']:
     clique_extra_data += bytes.fromhex(clique_signer_acct.address[2:])
 clique_extra_data += b'\x00' * 65
 
+with open('bytecode_l2_l1block.txt', 'rt') as f:
+    bytecode_l2_l1block = f.read()
+
+with open('bytecode_l1_depositfeed.txt', 'rt') as f:
+    bytecode_l1_depositfeed = f.read()
+
 l1_out = {
     "config": {
         "chainId": int(data['l1_chain_id']),
@@ -65,7 +71,7 @@ l1_out = {
         **premine_alloc,
         data['deposit_contract_address']: {
             "balance": "0",
-            "code": "",  # TODO 0x hex code from contract ABI
+            "code": bytecode_l1_depositfeed,
             "storage": {}
         }
     },
@@ -93,7 +99,7 @@ l2_out = {
         **premine_alloc,
         data['l1_info_predeploy_address']: {
             "balance": "0",
-            "code": "",  # TODO 0x hex code from contract ABI
+            "code": bytecode_l2_l1block,
             "storage": {}
         },
     },

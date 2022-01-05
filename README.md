@@ -8,7 +8,20 @@ Test scripts etc. for experimental rollup testing.
 
 Change `rollup.yaml` for custom premine / testnet ID / L1 clique signers.
 
+### Optional: recompile system contracts bytecode.
+
+Compile and fetch deployed bytecode, to embed in local testnet genesis states.
+```shell
+cd ../optimistic-specs/packages/contracts
+yarn build
+cat artifacts/contracts/L2/L1Block.sol/L1Block.json | jq -r .deployedBytecode > ../../../rollup-node-experiments/bytecode_l2_l1block.txt
+cat artifacts/contracts/L1/DepositFeed.sol/DepositFeed.json | jq -r .deployedBytecode > ../../../rollup-node-experiments/bytecode_l1_depositfeed.txt
 ```
+
+### generate configs
+
+Build the L1 and L2 chain genesis configurations:
+```shell
 python -m venv venv
 source venv/bin/activate
 
