@@ -1,2 +1,6 @@
 venv
 *_genesis.json
+
+refl2geth
+data_l1
+data_l2
