@@ -128,8 +128,8 @@ mv rollupnode ../rollup-node-experiments/
 cd ../rollup-node-experiments/
 
 ./rollupnode run \
- --l1=http://localhost:8545 \
- --l2=http://localhost:9000 \
+ --l1=ws://localhost:8546 \
+ --l2=ws://localhost:9001 \
  --log.level=debug \
  --genesis.l1-hash=$(cat l1_genesis_hash.txt) \
  --genesis.l1-num=0 \
