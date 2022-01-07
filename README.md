@@ -54,13 +54,14 @@ geth --datadir data_l1 \
     --vmodule=rpc=5
 
 # Get the genesis block hash
-curl -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0","method":"eth_getBlockByNumber","params":["0", false],"id":1}' https://localhost:8545 | jq -r ".result.hash" | tee l1_genesis_hash.txt
+curl -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0","method":"eth_getBlockByNumber","params":["0x0", false],"id":1}' http://localhost:8545 | jq -r ".result.hash" | tee l1_genesis_hash.txt
 
 # Import the clique signer secret key into geth
-geth --datadir data_l1 account import signer_0x30eC912c5b1D14aa6d1cb9AA7A6682415C4F7Eb0
+echo -n "foobar" > signer_password.txt
+geth --datadir data_l1 account import --password=signer_password.txt signer_0x30eC912c5b1D14aa6d1cb9AA7A6682415C4F7Eb0
 
 # Then, restart with block production enabled:
-# Add flag: --unlock 0x30eC912c5b1D14aa6d1cb9AA7A6682415C4F7Eb0 --mine
+# Add flag: --allow-insecure-unlock --unlock 0x30eC912c5b1D14aa6d1cb9AA7A6682415C4F7Eb0 --password=signer_password.txt --mine
 ```
 
 ### L2 exec-engine setup
