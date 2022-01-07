@@ -74,36 +74,47 @@ git clone --branch optimism-prototype https://github.com/ethereum-optimism/refer
 cd reference-optimistic-geth
 go mod download
 go build -o refl2geth ./cmd/geth
-mv refl2geth ../rollup-node-experiments
+mv refl2geth ../rollup-node-experiments/
+cd ../rollup-node-experiments/
 
 # Create L2 data dir
 ./refl2geth init --datadir data_l2 l2_genesis.json
 
 # Run L2 geth
-./refl2geth --datadir data_l2 --networkid 901
+./refl2geth --datadir data_l2 \
+    --networkid 901 \
+    --http --http.api "net,eth,consensus" \
+    --http.port 9000 \
+    --http.addr 127.0.0.1 \
+    --http.corsdomain "*" \
+    --ws --ws.api "net,eth,consensus" \
+    --ws.port=9001 \
+    --ws.addr 0.0.0.0 \
+    --maxpeers=0 \
+    --vmodule=rpc=5
+
+curl -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0","method":"eth_getBlockByNumber","params":["0x0", false],"id":1}' http://localhost:9000 | jq -r ".result.hash" | tee l2_genesis_hash.txt
 ```
 
 ### Rollup-node setup
 
-TODO:
-- optimism specs
-- run opnode/cmd
-- use genesis hash flags for L1 and L2 block hashes (need script to retrieve from initialized geth nodes)
+```shell
+# Prepare rollup-node binary (or `go run` directly from source instead)
+git clone --branch l2-tracking https://github.com/ethereum-optimism/optimistic-specs
+cd optimistic-specs
+go mod download
+go build -o rollupnode ./opnode/cmd
+mv rollupnode ../rollup-node-experiments/
+cd ../rollup-node-experiments/
 
-### General geth setup tips
-
+rollupnode run \
+ --l1=http://localhost:8545 \
+ --l2=http://localhost:9000 \
+ --log.level=debug \
+ --genesis.l1-hash=$(cat l1_genesis_hash.txt) \
+ --genesis.l1-num=0 \
+ --genesis.l2-hash=$(cat l2_genesis_hash.txt)
 ```
-# If public, add:
---nat extip:YOUR_IP_HERE
-
-# If private (you only need a single node for testing local L2 deployment):
---maxpeers=0
-```
-
-Then:
-- setup L1 node with L1 chain config (`geth init --todo`), with upstream geth
-- setup L2 engine with L2 chain config (`geth init --todo`), but with 
-- setup L2 rollup node (https://github.com/ethereum-optimism/optimistic-specs/)
 
 ## License
 
