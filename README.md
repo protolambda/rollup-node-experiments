@@ -53,15 +53,29 @@ geth --datadir data_l1 \
     --maxpeers=0 \
     --vmodule=rpc=5
 
-# Get the genesis block hash
+# Get the genesis block hash (while running the above command)
 curl -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0","method":"eth_getBlockByNumber","params":["0x0", false],"id":1}' http://localhost:8545 | jq -r ".result.hash" | tee l1_genesis_hash.txt
+
+# shut down geth again
 
 # Import the clique signer secret key into geth
 echo -n "foobar" > signer_password.txt
 geth --datadir data_l1 account import --password=signer_password.txt signer_0x30eC912c5b1D14aa6d1cb9AA7A6682415C4F7Eb0
 
 # Then, restart with block production enabled:
-# Add flag: --allow-insecure-unlock --unlock 0x30eC912c5b1D14aa6d1cb9AA7A6682415C4F7Eb0 --password=signer_password.txt --mine
+geth --datadir data_l1 \
+    --networkid 900 \
+    --http --http.api "net,eth,consensus" \
+    --http.port 8545 \
+    --http.addr 127.0.0.1 \
+    --http.corsdomain "*" \
+    --ws --ws.api "net,eth,consensus" \
+    --ws.port=8546 \
+    --ws.addr 0.0.0.0 \
+    --maxpeers=0 \
+    --vmodule=rpc=5 \
+    --allow-insecure-unlock --unlock 0x30eC912c5b1D14aa6d1cb9AA7A6682415C4F7Eb0 \
+    --password=signer_password.txt --mine
 ```
 
 ### L2 exec-engine setup
@@ -90,8 +104,12 @@ cd ../rollup-node-experiments/
     --ws --ws.api "net,eth,consensus" \
     --ws.port=9001 \
     --ws.addr 0.0.0.0 \
+    --port=30304 \
+    --nat=none \
     --maxpeers=0 \
     --vmodule=rpc=5
+# TODO: remove maxpeers=0 and --nat=none if testing with more local nodes
+
 
 curl -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0","method":"eth_getBlockByNumber","params":["0x0", false],"id":1}' http://localhost:9000 | jq -r ".result.hash" | tee l2_genesis_hash.txt
 ```
