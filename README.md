@@ -24,6 +24,7 @@ Build the L1 and L2 chain genesis configurations:
 ```shell
 python -m venv venv
 source venv/bin/activate
+pip install -r requirements.txt
 
 # generate a `l1_genesis.json` and `l2_genesis.json` for local L1 and L2 geth instances
 python gen_confs.py
@@ -80,7 +81,7 @@ geth --datadir data_l1 \
 
 ### L2 exec-engine setup
 
-With  `optimism-prototype` branch:
+Clone and build the `optimism-prototype` branch into the parent directory containing this repo:
 
 ```shell
 # Prepare L2 binary (or `go run` directly from source instead)
@@ -126,7 +127,7 @@ go build -o rollupnode ./opnode/cmd
 mv rollupnode ../rollup-node-experiments/
 cd ../rollup-node-experiments/
 
-rollupnode run \
+./rollupnode run \
  --l1=http://localhost:8545 \
  --l2=http://localhost:9000 \
  --log.level=debug \
