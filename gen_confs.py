@@ -24,9 +24,10 @@ common_forks = {
     "petersburgBlock": 0,
     "istanbulBlock": 0,
     "berlinBlock": 0,
+    "londonBlock": 0,
 }
 
-l1_genesis_time = time.time()
+l1_genesis_time = int(time.time())
 
 # Allocate 1 wei to all possible pre-compiles.
 # See https://github.com/ethereum/EIPs/issues/716 "SpuriousDragon RIPEMD bug"
@@ -52,10 +53,10 @@ for signer_path in data['clique_signers']:
 clique_extra_data += b'\x00' * 65
 
 with open('bytecode_l2_l1block.txt', 'rt') as f:
-    bytecode_l2_l1block = f.read()
+    bytecode_l2_l1block = f.read().strip()
 
 with open('bytecode_l1_depositfeed.txt', 'rt') as f:
-    bytecode_l1_depositfeed = f.read()
+    bytecode_l1_depositfeed = f.read().strip()
 
 l1_out = {
     "config": {
