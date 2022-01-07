@@ -33,21 +33,34 @@ python gen_confs.py
 
 ### L1 setup
 
-With *upstream geth*:
-```
+```shell
+# install upstream geth:
+go install github.com/ethereum/go-ethereum/cmd/geth@v1.10.15
+
+# Create L1 data dir
 geth init --datadir data_l1 l1_genesis.json
 
+# Run L1 geth
 geth --datadir data_l1 --networkid 900
 ```
 
 ### L2 exec-engine setup
 
-With https://github.com/ethereum-optimism/reference-optimistic-geth `optimism-prototype` branch:
+With  `optimism-prototype` branch:
 
-```
-geth init --datadir data_l2 l2_genesis.json
+```shell
+# Prepare L2 binary (or `go run` directly from source instead)
+git clone --branch optimism-prototype https://github.com/ethereum-optimism/reference-optimistic-geth
+cd reference-optimistic-geth
+go mod download
+go build -o refl2geth ./cmd/geth
+mv refl2geth ../rollup-node-experiments
 
-geth --datadir data_l2 --networkid 901
+# Create L2 data dir
+./refl2geth init --datadir data_l2 l2_genesis.json
+
+# Run L2 geth
+./refl2geth --datadir data_l2 --networkid 901
 ```
 
 ### Rollup-node setup
