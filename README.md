@@ -41,7 +41,26 @@ go install github.com/ethereum/go-ethereum/cmd/geth@v1.10.15
 geth init --datadir data_l1 l1_genesis.json
 
 # Run L1 geth
-geth --datadir data_l1 --networkid 900
+geth --datadir data_l1 \
+    --networkid 900 \
+    --http --http.api "net,eth,consensus" \
+    --http.port 8545 \
+    --http.addr 127.0.0.1 \
+    --http.corsdomain "*" \
+    --ws --ws.api "net,eth,consensus" \
+    --ws.port=8546 \
+    --ws.addr 0.0.0.0 \
+    --maxpeers=0 \
+    --vmodule=rpc=5
+
+# Get the genesis block hash
+curl -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0","method":"eth_getBlockByNumber","params":["0", false],"id":1}' https://localhost:8545 | jq -r ".result.hash" | tee l1_genesis_hash.txt
+
+# Import the clique signer secret key into geth
+geth --datadir data_l1 account import signer_0x30eC912c5b1D14aa6d1cb9AA7A6682415C4F7Eb0
+
+# Then, restart with block production enabled:
+# Add flag: --unlock 0x30eC912c5b1D14aa6d1cb9AA7A6682415C4F7Eb0 --mine
 ```
 
 ### L2 exec-engine setup

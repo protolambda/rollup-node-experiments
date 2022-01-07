@@ -50,6 +50,9 @@ clique_extra_data = b'\x00' * 32
 for signer_path in data['clique_signers']:
     clique_signer_acct = w3.eth.account.from_mnemonic(data['mnemonic'], account_path=signer_path, passphrase='')
     clique_extra_data += bytes.fromhex(clique_signer_acct.address[2:])
+    print("added clique signer", clique_signer_acct.address)
+    with open(f"signer_{clique_signer_acct.address}", "wt") as f:
+        f.write(clique_signer_acct.key.hex()[2:])  # strip 0x
 clique_extra_data += b'\x00' * 65
 
 with open('bytecode_l2_l1block.txt', 'rt') as f:
