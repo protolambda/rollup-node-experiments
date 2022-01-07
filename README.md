@@ -120,7 +120,7 @@ curl -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0","metho
 
 ```shell
 # Prepare rollup-node binary (or `go run` directly from source instead)
-git clone --branch l2-tracking https://github.com/ethereum-optimism/optimistic-specs
+git clone --branch staging https://github.com/ethereum-optimism/optimistic-specs
 cd optimistic-specs
 go mod download
 go build -o rollupnode ./opnode/cmd
