@@ -75,6 +75,7 @@ geth --datadir data_l1 \
     --vmodule=rpc=5 \
     --allow-insecure-unlock --unlock 0x30eC912c5b1D14aa6d1cb9AA7A6682415C4F7Eb0 \
     --password=signer_password.txt --mine
+    --dev --dev.period=0
 ```
 
 ### L2 exec-engine setup
