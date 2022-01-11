@@ -1,0 +1,7 @@
+[submodule "optimistic-specs"]
+  path = optimistic-specs
+  url = https://github.com/ethereum-optimism/optimistic-specs
+  branch = input-deriv-test-cleanup
+[submodule "reference-optimistic-geth"]
+  path = reference-optimistic-geth
+  url = https://github.com/ethereum-optimism/reference-optimistic-geth
