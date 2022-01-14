@@ -41,10 +41,12 @@ precompile_alloc = {
 
 premine_alloc = {}
 for key, value in data['premine'].items():
-    acct = w3.eth.account.from_mnemonic(data['mnemonic'], account_path=key, passphrase='')
-    weival = value.replace('ETH', '0' * 18)
-    premine_alloc[acct.address] = {"balance": weival}
-
+    if key.startswith('m/'):
+        acct = w3.eth.account.from_mnemonic(data['mnemonic'], account_path=key, passphrase='')
+        weival = value.replace('ETH', '0' * 18)
+        premine_alloc[acct.address] = {"balance": weival}
+    if key.startswith('0x'):
+        premine_alloc[key] = {"balance": weival}
 
 clique_extra_data = b'\x00' * 32
 for signer_path in data['clique_signers']:
