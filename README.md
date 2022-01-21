@@ -125,7 +125,7 @@ Run `./build-rollup-node.sh` or,
 
 ```shell
 # Prepare rollup-node binary (or `go run` directly from source instead)
-git clone --branch staging https://github.com/ethereum-optimism/optimistic-specs
+git clone https://github.com/ethereum-optimism/optimistic-specs
 cd optimistic-specs
 go mod download
 go build -o rollupnode ./opnode/cmd
