@@ -9,3 +9,6 @@ signer_*
 l1_genesis_hash.txt
 l2_genesis_hash.txt
 rollupnode
+.mnemonic
+
+/logs

@@ -1,0 +1,19 @@
+# source this file to define useful testing variables
+
+L1_RPC=http://localhost:8545
+L2_RPC=http://localhost:9000
+
+# set default RPC to L1
+export ETH_RPC_URL=$L1_RPC
+
+# this is the address matching the mnemonic in rollup.yaml (and .mnemonic if you ran setup.sh)
+DEV_ADDR=0x30eC912c5b1D14aa6d1cb9AA7A6682415C4F7Eb0
+
+# set the default sender to the dev address
+export ETH_FROM=$DEV_ADDR
+
+# deposit contract address on L1
+DEPOSIT_CONTRACT=0xdeaddeaddeaddeaddeaddeaddeaddeaddead0001
+
+# signature for deposit call in deposit contract
+DEPOSIT_SIG='depositTransaction(address,uint256,uint256,bool,bytes)'
