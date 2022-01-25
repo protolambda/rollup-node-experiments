@@ -2,15 +2,43 @@
 
 Test scripts etc. for *experimental* optimistic rollup testing of the new [Optimism 1.0 specs](https://github.com/ethereum-optimism/optimistic-specs).
 
+Running `./install.sh` will run a complete configuration + installation of the system, so that it is
+ready to run. Alteratively, follow the instructions below for more figne grained steps.
+
 ## Config preparation
 
 Change `rollup.yaml` for custom premine / testnet ID / L1 clique signers.
 
+Then run `./setup.sh`, or follow the steps below.
+
+`setup.sh` is idempotent: it produces no changes if ran twice in a row. It does,
+as needed rebuild the contracts, regenerate the genesis file configuraiton and
+update the `optimistic-specs` and `reference-optimistic-geth` submodule.
+
+`setup.sh` does not build the nodes. To do that, runs `./install.sh`, which also
+calls `setup.sh`.
+
+### Initialize submodules
+
+Run
+
+```
+git submodule init
+git submodule update
+```
+
+Alternatively, you can run with these directories being located elsewhere. In
+that case, follow the code snippets in this README and do not run the provided
+shell scripts.
+
 ### Optional: recompile system contracts bytecode.
 
-Compile and fetch deployed bytecode, to embed in local testnet genesis states.
+To compile and fetch deployed bytecode, to embed in local testnet genesis states,
+run `./build-contracts.sh`, or:
+
 ```shell
 cd ../optimistic-specs/packages/contracts
+yarn
 yarn build
 cat artifacts/contracts/L2/L1Block.sol/L1Block.json | jq -r .deployedBytecode > ../../../rollup-node-experiments/bytecode_l2_l1block.txt
 cat artifacts/contracts/L1/DepositFeed.sol/DepositFeed.json | jq -r .deployedBytecode > ../../../rollup-node-experiments/bytecode_l1_depositfeed.txt
@@ -19,6 +47,7 @@ cat artifacts/contracts/L1/DepositFeed.sol/DepositFeed.json | jq -r .deployedByt
 ### generate configs
 
 Build the L1 and L2 chain genesis configurations:
+
 ```shell
 python -m venv venv
 source venv/bin/activate
@@ -32,7 +61,7 @@ python gen_confs.py
 
 ### L1 setup
 
-Run `./build-l1-geth.sh` or,
+Run `./build-l1-geth.sh`, or:
 
 ```shell
 # install upstream geth:
@@ -46,7 +75,7 @@ echo -n "foobar" > signer_password.txt
 geth --datadir data_l1 account import --password=signer_password.txt signer_0x30eC912c5b1D14aa6d1cb9AA7A6682415C4F7Eb0
 ```
 
-Run `./start-l1-geth.sh` or...
+Run `./start-l1-geth.sh`, or:
 
 ```
 # Start L1 Geth with block production enabled:
@@ -146,6 +175,30 @@ Then run `./start-rollup-node.sh` or,
  --genesis.l2-hash=$(cat l2_genesis_hash.txt)
 ```
 
+### Running nodes in the background
+
+```
+./start-l1-geth-killable.sh &
+L1PID=$!
+./start-l2-geth-killable.sh &
+L2PID=$!
+./start-rollup-node-killable.sh &
+RNPID=$!
+
+# killing
+kill $L1PID
+kill $L2PID
+kill $L3PID
+```
+
+### Verifying that the system works
+
+Run `./test.sh`, this will run all nodes in the background (just like the previous section) and
+additionally submit a deposit on L1.
+
+To further play around with the system, you might find it useful to source the `cast-env` file which
+sets useful environment variables.
+
 ### Resetting
 
 In order to restart the test with a new build, you will likely want to wipe the chainstate, which
@@ -153,6 +206,9 @@ will also require rebuilding the l1 and l2 nodes. This can be accomplished by ru
 scripts:
 
 ```
+# kill all running L1, L2 and rollup nodes (may include other mainnet nodes!)
+./killall.sh
+
 # deletes both data_l1 and data_l2 dirs
 ./clean.sh
 
@@ -170,4 +226,3 @@ scripts:
 ## License
 
 MIT, see [`LICENSE`](./LICENSE) file.
-
